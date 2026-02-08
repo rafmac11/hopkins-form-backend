@@ -1,0 +1,641 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get a Free Quote</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,500;9..40,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.1/css/all.css">
+<style>
+:root {
+  --green: #0B6E3F;
+  --green-dark: #084C2B;
+  --green-light: #E8F5EE;
+  --green-glow: rgba(11,110,63,0.15);
+  --gold: #C8942A;
+  --gold-light: #FFF8EB;
+  --charcoal: #1A1A1A;
+  --slate: #4A4A4A;
+  --muted: #7A7A7A;
+  --light: #F7F8F6;
+  --white: #FFFFFF;
+  --danger: #D44638;
+  --radius: 10px;
+  --shadow-md: 0 8px 30px rgba(0,0,0,0.08);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.12);
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: transparent;
+  color: var(--charcoal);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  padding: 0;
+}
+
+.form-wrap { max-width: 560px; margin: 0 auto; padding: 8px; }
+.form-card {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+.progress-bar-wrap { height: 4px; background: var(--green-light); }
+.progress-bar-fill {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--green), var(--gold));
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+.step-header { display: flex; align-items: center; gap: 12px; padding: 18px 24px 0; }
+.step-dots { display: flex; gap: 6px; }
+.step-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #ddd; transition: var(--transition);
+}
+.step-dot.active { background: var(--green); transform: scale(1.2); }
+.step-dot.done { background: var(--gold); }
+.step-label { font-size: 13px; color: var(--muted); font-weight: 500; }
+
+.form-body { padding: 20px 24px 24px; }
+.form-step { display: none; animation: fadeIn 0.35s ease; }
+.form-step.active { display: block; }
+.step-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 21px; font-weight: 700; margin-bottom: 4px;
+}
+.step-subtitle { font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+
+.field { margin-bottom: 16px; position: relative; }
+.field label { display: block; font-size: 13px; font-weight: 500; color: var(--slate); margin-bottom: 5px; }
+.field label .req { color: var(--danger); }
+.input-wrap {
+  position: relative; display: flex; align-items: center;
+  border: 1.5px solid #E0E0E0; border-radius: var(--radius);
+  background: var(--white); transition: var(--transition);
+}
+.input-wrap:focus-within { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-glow); }
+.input-wrap.error { border-color: var(--danger); }
+.input-wrap .icon {
+  position: absolute; left: 14px; font-size: 14px; color: #bbb;
+  pointer-events: none; transition: var(--transition);
+}
+.input-wrap:focus-within .icon { color: var(--green); }
+.input-wrap input, .input-wrap select, .input-wrap textarea {
+  width: 100%; border: none; outline: none; background: none;
+  font-family: inherit; font-size: 15px; color: var(--charcoal);
+  padding: 12px 14px 12px 40px;
+}
+.input-wrap textarea { resize: vertical; min-height: 90px; padding-top: 12px; }
+.input-wrap select { cursor: pointer; -webkit-appearance: none; appearance: none; }
+.input-wrap .select-arrow { position: absolute; right: 14px; font-size: 10px; color: #bbb; pointer-events: none; }
+.field-error { font-size: 12px; color: var(--danger); margin-top: 4px; display: none; animation: shake 0.3s ease; }
+.field-error.show { display: block; }
+
+.urgency-bar {
+  background: var(--gold-light); border: 1px solid rgba(200,148,42,0.2);
+  border-radius: 8px; padding: 9px 14px; margin-bottom: 18px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--slate);
+}
+.urgency-bar i { color: var(--gold); font-size: 15px; }
+.urgency-bar strong { color: var(--charcoal); }
+
+.services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.service-card {
+  border: 2px solid #E8E8E8; border-radius: 12px;
+  padding: 16px 12px; text-align: center;
+  cursor: pointer; transition: var(--transition);
+  position: relative; background: var(--white);
+}
+.service-card:hover { border-color: var(--green); transform: translateY(-2px); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.service-card.selected { border-color: var(--green); background: var(--green-light); }
+.service-card.selected::after {
+  content: '\f058'; font-family: 'Font Awesome 6 Free'; font-weight: 900;
+  position: absolute; top: 7px; right: 7px; color: var(--green); font-size: 15px;
+}
+.service-card .svc-icon {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--green-light); color: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 8px; font-size: 16px; transition: var(--transition);
+}
+.service-card.selected .svc-icon, .service-card:hover .svc-icon { background: var(--green); color: var(--white); }
+.service-card .svc-name { font-size: 13px; font-weight: 600; }
+
+.btn-row { display: flex; gap: 10px; margin-top: 22px; }
+.btn {
+  flex: 1; padding: 13px 20px; border: none; border-radius: var(--radius);
+  font-family: inherit; font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: var(--transition);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-back { background: var(--light); color: var(--slate); flex: 0 0 auto; padding: 13px 20px; }
+.btn-back:hover { background: #EAEAEA; }
+.btn-next {
+  background: var(--green); color: var(--white);
+  box-shadow: 0 4px 14px rgba(11,110,63,0.3);
+}
+.btn-next:hover { background: var(--green-dark); transform: translateY(-1px); }
+.btn-next:active { transform: translateY(0); }
+.btn-next:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.selected-svc-tag {
+  display: none; text-align: center; margin-top: 10px;
+  animation: fadeIn 0.3s ease;
+}
+.selected-svc-tag.show { display: block; }
+.selected-svc-tag .tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--green-light); color: var(--green);
+  font-size: 13px; font-weight: 600; padding: 6px 14px;
+  border-radius: 999px;
+}
+.selected-svc-tag .tag i { font-size: 11px; }
+
+.btn-call {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 11px; margin-top: 10px;
+  background: transparent; border: 1.5px solid var(--green);
+  border-radius: var(--radius); color: var(--green);
+  font-family: inherit; font-size: 14px; font-weight: 600;
+  cursor: pointer; text-decoration: none; transition: var(--transition);
+}
+.btn-call:hover { background: var(--green-light); }
+
+.trust-strip {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  padding: 12px 24px; background: var(--light);
+  border-top: 1px solid #eee; font-size: 11px; color: var(--muted); flex-wrap: wrap;
+}
+.trust-strip i { color: var(--green); }
+.trust-item { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+
+.social-proof {
+  position: fixed; bottom: 16px; left: 16px;
+  background: var(--white); border-radius: 12px;
+  box-shadow: var(--shadow-md); padding: 12px 16px;
+  display: flex; align-items: center; gap: 10px;
+  max-width: 280px; z-index: 998;
+  transform: translateX(-120%); transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
+  border-left: 3px solid var(--green);
+}
+.social-proof.show { transform: translateX(0); }
+.social-proof .sp-icon {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--green-light); color: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.social-proof .sp-text { font-size: 12px; color: var(--slate); line-height: 1.4; }
+.social-proof .sp-text strong { color: var(--charcoal); }
+.social-proof .sp-time { font-size: 11px; color: var(--muted); }
+.social-proof .sp-close {
+  position: absolute; top: 5px; right: 8px;
+  background: none; border: none; color: #ccc; cursor: pointer; font-size: 11px;
+}
+
+.exit-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+  z-index: 9999; display: none; align-items: center; justify-content: center;
+  padding: 16px; backdrop-filter: blur(3px);
+}
+.exit-overlay.show { display: flex; }
+.exit-modal {
+  background: var(--white); border-radius: 20px;
+  max-width: 400px; width: 100%; overflow: hidden;
+  animation: popIn 0.35s ease;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.25);
+}
+.exit-modal-top {
+  background: linear-gradient(135deg, var(--green-dark), var(--green));
+  padding: 28px 24px; text-align: center; color: var(--white);
+}
+.exit-modal-top h3 { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 6px; }
+.exit-modal-top p { font-size: 14px; opacity: 0.85; }
+.exit-modal-body { padding: 24px; text-align: center; }
+.exit-modal-body .promo {
+  display: inline-block; background: var(--gold-light);
+  border: 2px dashed var(--gold); border-radius: 10px;
+  padding: 10px 20px; font-size: 16px; font-weight: 700;
+  color: var(--gold); margin-bottom: 14px;
+}
+.exit-modal-body p { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+.exit-modal-body .btn-next { width: 100%; }
+.exit-modal-body .skip {
+  display: inline-block; margin-top: 10px;
+  font-size: 12px; color: var(--muted); cursor: pointer;
+  background: none; border: none; text-decoration: underline;
+}
+
+.success-screen { display: none; animation: fadeIn 0.5s ease; }
+.success-screen.active { display: block; }
+.success-inner { padding: 36px 24px; text-align: center; }
+.success-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: var(--green-light); color: var(--green);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 18px; font-size: 28px;
+  animation: popIn 0.4s ease 0.2s both;
+}
+.success-inner h2 { font-family: 'Playfair Display', serif; font-size: 24px; margin-bottom: 6px; }
+.success-inner > p { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+.summary-card {
+  background: var(--light); border-radius: 12px;
+  padding: 18px; text-align: left; margin-bottom: 20px;
+}
+.summary-card h4 { font-size: 13px; color: var(--green); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+.summary-row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; }
+.summary-row .label { color: var(--muted); }
+.summary-row .value { font-weight: 600; text-align: right; }
+
+.autosave-toast {
+  position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%) translateY(60px);
+  background: var(--charcoal); color: var(--white); padding: 8px 18px;
+  border-radius: 999px; font-size: 12px; font-weight: 500;
+  z-index: 999; opacity: 0; transition: all 0.35s ease;
+  display: flex; align-items: center; gap: 6px;
+}
+.autosave-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+@keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2.5px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 480px) {
+  .form-body { padding: 16px; }
+  .step-header { padding: 14px 16px 0; }
+  .services-grid { grid-template-columns: 1fr; }
+  .trust-strip { gap: 8px; padding: 10px 14px; }
+  .social-proof { left: 8px; right: 8px; max-width: none; bottom: 8px; }
+}
+</style>
+</head>
+<body>
+
+<div class="form-wrap">
+  <div class="form-card" id="formCard">
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressFill"></div></div>
+
+    <div class="step-header">
+      <div class="step-dots">
+        <div class="step-dot active" data-step="1"></div>
+        <div class="step-dot" data-step="2"></div>
+        <div class="step-dot" data-step="3"></div>
+      </div>
+      <span class="step-label" id="stepLabel">Step 1 of 3</span>
+    </div>
+
+    <div class="form-body">
+
+      <!-- STEP 1 -->
+      <div class="form-step active" data-step="1">
+        <h2 class="step-title">Get Your Free Quote</h2>
+        <p class="step-subtitle">Takes 60 seconds — no obligation.</p>
+        <div class="urgency-bar">
+          <i class="fas fa-fire"></i>
+          <span><strong id="urgencyCount">3</strong> people requested quotes in your area today</span>
+        </div>
+        <div class="field">
+          <label>Full Name <span class="req">*</span></label>
+          <div class="input-wrap"><i class="fas fa-user icon"></i><input type="text" id="fName" placeholder="John Anderson" autocomplete="name"></div>
+          <div class="field-error" id="fNameErr">Please enter your full name</div>
+        </div>
+        <div class="field">
+          <label>Phone Number <span class="req">*</span></label>
+          <div class="input-wrap"><i class="fas fa-phone icon"></i><input type="tel" id="fPhone" placeholder="(612) 000-0000" autocomplete="tel"></div>
+          <div class="field-error" id="fPhoneErr">Enter a valid 10-digit phone number</div>
+        </div>
+        <div class="field">
+          <label>Email Address <span class="req">*</span></label>
+          <div class="input-wrap"><i class="fas fa-envelope icon"></i><input type="email" id="fEmail" placeholder="john@email.com" autocomplete="email"></div>
+          <div class="field-error" id="fEmailErr">Enter a valid email address</div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div class="form-step" data-step="2">
+        <h2 class="step-title">What do you need?</h2>
+        <p class="step-subtitle">Select a service to get a tailored quote.</p>
+        <div class="services-grid">
+          <div class="service-card" data-svc="Concrete Driveways"><div class="svc-icon"><i class="fas fa-road"></i></div><div class="svc-name">Driveways</div></div>
+          <div class="service-card" data-svc="Concrete Patios"><div class="svc-icon"><i class="fas fa-umbrella-beach"></i></div><div class="svc-name">Patios</div></div>
+          <div class="service-card" data-svc="Stamped Concrete"><div class="svc-icon"><i class="fas fa-palette"></i></div><div class="svc-name">Stamped Concrete</div></div>
+          <div class="service-card" data-svc="Concrete Repair"><div class="svc-icon"><i class="fas fa-wrench"></i></div><div class="svc-name">Repair &amp; Leveling</div></div>
+          <div class="service-card" data-svc="Concrete Resurfacing"><div class="svc-icon"><i class="fas fa-brush"></i></div><div class="svc-name">Resurfacing</div></div>
+          <div class="service-card" data-svc="Garage Epoxy Flooring"><div class="svc-icon"><i class="fas fa-warehouse"></i></div><div class="svc-name">Garage Epoxy</div></div>
+        </div>
+        <div class="field-error" id="fSvcErr" style="margin-top:8px">Please select a service</div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div class="form-step" data-step="3">
+        <h2 class="step-title">Almost done!</h2>
+        <p class="step-subtitle">Project details help us give an accurate quote.</p>
+        <div class="field">
+          <label>Project Address <span class="req">*</span></label>
+          <div class="input-wrap"><i class="fas fa-map-marker-alt icon"></i><input type="text" id="fAddress" placeholder="123 Main St, Hopkins" autocomplete="street-address"></div>
+          <div class="field-error" id="fAddressErr">Enter your project address</div>
+        </div>
+        <div class="field">
+          <label>Zip Code <span class="req">*</span></label>
+          <div class="input-wrap"><i class="fas fa-map-pin icon"></i><input type="text" id="fZip" placeholder="55343" maxlength="5" autocomplete="postal-code"></div>
+          <div class="field-error" id="fZipErr">Enter a valid 5-digit zip code</div>
+        </div>
+        <div class="field">
+          <label>When do you need this?</label>
+          <div class="input-wrap">
+            <i class="fas fa-calendar icon"></i>
+            <select id="fTimeline"><option value="">Select timeline</option><option value="As soon as possible">As soon as possible</option><option value="Within 1 month">Within 1 month</option><option value="Within 3 months">Within 3 months</option><option value="Flexible">Flexible</option></select>
+            <i class="fas fa-chevron-down select-arrow"></i>
+          </div>
+        </div>
+        <div class="field">
+          <label>Budget Range</label>
+          <div class="input-wrap">
+            <i class="fas fa-dollar-sign icon"></i>
+            <select id="fBudget"><option value="">Select budget</option><option value="Under $5,000">Under $5,000</option><option value="$5,000 – $10,000">$5k – $10k</option><option value="$10,000 – $20,000">$10k – $20k</option><option value="$20,000+">$20,000+</option></select>
+            <i class="fas fa-chevron-down select-arrow"></i>
+          </div>
+        </div>
+        <div class="field">
+          <label>Project Description <span class="req">*</span></label>
+          <div class="input-wrap"><i class="fas fa-comment-dots icon" style="top:14px"></i><textarea id="fMessage" placeholder="Size, specific needs, questions…"></textarea></div>
+          <div class="field-error" id="fMsgErr">Describe your project briefly</div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-back" id="btnBack" style="display:none"><i class="fas fa-arrow-left"></i> Back</button>
+        <button class="btn btn-next" id="btnNext">Continue <i class="fas fa-arrow-right"></i></button>
+      </div>
+      <div class="selected-svc-tag" id="selectedSvcTag"></div>
+      <a href="tel:6124733196" class="btn-call"><i class="fas fa-phone-alt"></i> Call 612-473-3196</a>
+    </div>
+
+    <div class="trust-strip">
+      <div class="trust-item"><i class="fas fa-shield-alt"></i> No spam</div>
+      <div class="trust-item"><i class="fas fa-lock"></i> Private</div>
+      <div class="trust-item"><i class="fas fa-clock"></i> 24hr response</div>
+      <div class="trust-item"><i class="fas fa-star" style="color:var(--gold)"></i> 4.9/5 rated</div>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="success-screen" id="successScreen">
+    <div class="form-card">
+      <div class="success-inner">
+        <div class="success-icon"><i class="fas fa-check"></i></div>
+        <h2>Quote Request Sent!</h2>
+        <p>We'll call you within 24 hours with a free estimate.</p>
+        <div class="summary-card" id="summaryCard"></div>
+        <button class="btn btn-next" style="width:100%" onclick="resetForm()"><i class="fas fa-plus"></i> Submit Another</button>
+      </div>
+      <div class="trust-strip">
+        <div class="trust-item"><i class="fas fa-star" style="color:var(--gold)"></i> 4.9/5</div>
+        <div class="trust-item"><i class="fas fa-check-circle"></i> Licensed &amp; Insured</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Social Proof -->
+<div class="social-proof" id="socialProof">
+  <div class="sp-icon"><i class="fas fa-user-check"></i></div>
+  <div>
+    <div class="sp-text" id="spText"><strong>Sarah M.</strong> just requested a patio quote</div>
+    <div class="sp-time" id="spTime">12 min ago</div>
+  </div>
+  <button class="sp-close" onclick="document.getElementById('socialProof').classList.remove('show')"><i class="fas fa-times"></i></button>
+</div>
+
+<!-- Exit Intent -->
+<div class="exit-overlay" id="exitOverlay">
+  <div class="exit-modal">
+    <div class="exit-modal-top">
+      <h3>Wait — Don't Miss Out!</h3>
+      <p>Get a free estimate before spring fills our calendar.</p>
+    </div>
+    <div class="exit-modal-body">
+      <div class="promo"><i class="fas fa-tag"></i> FREE ON-SITE CONSULTATION</div>
+      <p>Finish your quote request now and get a complimentary on-site assessment.</p>
+      <button class="btn btn-next" onclick="document.getElementById('exitOverlay').classList.remove('show')"><i class="fas fa-arrow-right"></i> Continue My Quote</button>
+      <button class="skip" onclick="document.getElementById('exitOverlay').classList.remove('show');exitShown=true">No thanks</button>
+    </div>
+  </div>
+</div>
+
+<div class="autosave-toast" id="autosaveToast"><i class="fas fa-save"></i> Progress saved</div>
+
+<script>
+// ========== CONFIG ==========
+const BACKEND_URL = 'https://your-app.up.railway.app'; // <-- YOUR RAILWAY URL
+
+// ========== STATE ==========
+let step = 1, totalSteps = 3, selectedService = '', exitShown = false, autoAdvanceTimer = null;
+const $ = s => document.querySelector(s), $$ = s => document.querySelectorAll(s);
+
+// ========== NAVIGATION ==========
+function goToStep(n) {
+  step = n;
+  $$('.form-step').forEach(s => s.classList.remove('active'));
+  $(`.form-step[data-step="${n}"]`).classList.add('active');
+  $$('.step-dot').forEach(d => { const ds = +d.dataset.step; d.classList.toggle('active', ds===n); d.classList.toggle('done', ds<n); });
+  $('#progressFill').style.width = `${((n-1)/(totalSteps-1))*100}%`;
+  $('#stepLabel').textContent = `Step ${n} of ${totalSteps}`;
+
+  // Back button
+  $('#btnBack').style.display = n === 1 ? 'none' : 'flex';
+
+  // Next button label per step
+  if (n === 1) {
+    $('#btnNext').innerHTML = 'Continue <i class="fas fa-arrow-right"></i>';
+  } else if (n === 2) {
+    $('#btnNext').innerHTML = selectedService
+      ? 'Continue <i class="fas fa-arrow-right"></i>'
+      : 'Select a Service Above <i class="fas fa-hand-pointer"></i>';
+  } else if (n === totalSteps) {
+    $('#btnNext').innerHTML = 'Submit Request <i class="fas fa-paper-plane"></i>';
+  }
+
+  // Service tag
+  updateServiceTag();
+
+  // Focus first input
+  setTimeout(() => { const f = $(`.form-step[data-step="${n}"] input, .form-step[data-step="${n}"] textarea`); if(f) f.focus(); }, 100);
+  saveProgress();
+}
+
+function updateServiceTag() {
+  const tag = $('#selectedSvcTag');
+  if (selectedService && step === 3) {
+    tag.innerHTML = `<span class="tag"><i class="fas fa-check-circle"></i> Service: ${selectedService}</span>`;
+    tag.classList.add('show');
+  } else {
+    tag.classList.remove('show');
+  }
+}
+
+// ========== VALIDATION ==========
+function showErr(id) { $(`#${id}`).closest('.field')?.querySelector('.input-wrap')?.classList.add('error'); $(`#${id}Err`)?.classList.add('show'); }
+function clearErr(id) { $(`#${id}`).closest('.field')?.querySelector('.input-wrap')?.classList.remove('error'); $(`#${id}Err`)?.classList.remove('show'); }
+
+function v1() {
+  let ok = true;
+  const n = $('#fName').value.trim(), p = $('#fPhone').value.replace(/\D/g,''), e = $('#fEmail').value.trim();
+  if(n.length<2){showErr('fName');ok=false}else clearErr('fName');
+  if(p.length<10){showErr('fPhone');ok=false}else clearErr('fPhone');
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){showErr('fEmail');ok=false}else clearErr('fEmail');
+  return ok;
+}
+function v2() { if(!selectedService){$('#fSvcErr').classList.add('show');return false} $('#fSvcErr').classList.remove('show'); return true; }
+function v3() {
+  let ok = true;
+  if($('#fAddress').value.trim().length<5){showErr('fAddress');ok=false}else clearErr('fAddress');
+  if(!/^\d{5}$/.test($('#fZip').value.trim())){showErr('fZip');ok=false}else clearErr('fZip');
+  if($('#fMessage').value.trim().length<10){showErr('fMsg');ok=false}else clearErr('fMsg');
+  return ok;
+}
+
+// ========== BUTTONS ==========
+$('#btnNext').addEventListener('click', () => {
+  if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+  if(step===1 && v1()) goToStep(2);
+  else if(step===2 && v2()) goToStep(3);
+  else if(step===3 && v3()) submitForm();
+});
+$('#btnBack').addEventListener('click', () => {
+  if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+  if(step>1) goToStep(step-1);
+});
+
+// ========== SERVICE SELECT (auto-advance) ==========
+$$('.service-card').forEach(c => {
+  c.addEventListener('click', () => {
+    if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
+
+    $$('.service-card').forEach(x => x.classList.remove('selected'));
+    c.classList.add('selected');
+    selectedService = c.dataset.svc;
+    $('#fSvcErr').classList.remove('show');
+
+    // Update button
+    $('#btnNext').innerHTML = 'Continue <i class="fas fa-arrow-right"></i>';
+
+    // Auto-advance after short delay
+    autoAdvanceTimer = setTimeout(() => goToStep(3), 800);
+  });
+});
+
+// ========== FORMATTING ==========
+$('#fPhone').addEventListener('input', function() {
+  let v = this.value.replace(/\D/g,'');
+  if(v.length>0) {
+    if(v.length<=3) v=`(${v}`; else if(v.length<=6) v=`(${v.slice(0,3)}) ${v.slice(3)}`; else v=`(${v.slice(0,3)}) ${v.slice(3,6)}-${v.slice(6,10)}`;
+  }
+  this.value = v;
+});
+$('#fZip').addEventListener('input', function() { this.value = this.value.replace(/\D/g,'').slice(0,5); });
+$$('input, textarea, select').forEach(el => {
+  el.addEventListener('input', () => { el.closest('.field')?.querySelector('.input-wrap')?.classList.remove('error'); el.closest('.field')?.querySelector('.field-error')?.classList.remove('show'); });
+});
+
+// ========== SUBMIT ==========
+async function submitForm() {
+  const btn = $('#btnNext');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Submitting…';
+  const payload = {
+    name: $('#fName').value.trim(), phone: $('#fPhone').value.trim(), email: $('#fEmail').value.trim(),
+    service: selectedService, address: $('#fAddress').value.trim(), zipcode: $('#fZip').value.trim(),
+    timeline: $('#fTimeline').value || 'Not specified', budget: $('#fBudget').value || 'Not specified',
+    message: $('#fMessage').value.trim(),
+  };
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/quote`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+    const data = await res.json();
+    if(data.success) { showSuccess(payload); clearSaved(); if(typeof gtag==='function') gtag('event','generate_lead',{currency:'USD',value:1}); }
+    else alert('Something went wrong — call us at 612-473-3196.');
+  } catch(e) { alert('Connection error — call us at 612-473-3196.'); }
+  finally { btn.disabled=false; btn.innerHTML='Submit Request <i class="fas fa-paper-plane"></i>'; }
+}
+
+// ========== SUCCESS ==========
+function showSuccess(d) {
+  $('#formCard').style.display = 'none';
+  $('#successScreen').classList.add('active');
+  $('#summaryCard').innerHTML = `<h4>Your Request</h4>
+    <div class="summary-row"><span class="label">Name</span><span class="value">${d.name}</span></div>
+    <div class="summary-row"><span class="label">Phone</span><span class="value">${d.phone}</span></div>
+    <div class="summary-row"><span class="label">Service</span><span class="value">${d.service}</span></div>
+    <div class="summary-row"><span class="label">Zip</span><span class="value">${d.zipcode}</span></div>
+    <div class="summary-row"><span class="label">Timeline</span><span class="value">${d.timeline}</span></div>`;
+  try { window.parent.postMessage({type:'hcc_form_submit', data: d}, '*'); } catch(e){}
+}
+function resetForm() {
+  $('#formCard').style.display = ''; $('#successScreen').classList.remove('active');
+  $$('input, textarea').forEach(el => el.value = ''); $$('select').forEach(el => el.selectedIndex=0);
+  $$('.service-card').forEach(c => c.classList.remove('selected')); selectedService = ''; goToStep(1);
+}
+
+// ========== AUTOSAVE ==========
+function saveProgress() {
+  try { localStorage.setItem('hcc_form', JSON.stringify({
+    name:$('#fName').value, phone:$('#fPhone').value, email:$('#fEmail').value,
+    service:selectedService, address:$('#fAddress').value, zip:$('#fZip').value,
+    timeline:$('#fTimeline').value, budget:$('#fBudget').value, message:$('#fMessage').value, step
+  })); } catch(e){}
+}
+function loadSaved() {
+  try {
+    const d = JSON.parse(localStorage.getItem('hcc_form')); if(!d) return;
+    if(d.name) $('#fName').value=d.name; if(d.phone) $('#fPhone').value=d.phone;
+    if(d.email) $('#fEmail').value=d.email; if(d.address) $('#fAddress').value=d.address;
+    if(d.zip) $('#fZip').value=d.zip; if(d.timeline) $('#fTimeline').value=d.timeline;
+    if(d.budget) $('#fBudget').value=d.budget; if(d.message) $('#fMessage').value=d.message;
+    if(d.service) { selectedService=d.service; $$('.service-card').forEach(c => { if(c.dataset.svc===d.service) c.classList.add('selected'); }); }
+    if(d.step>1 && d.name) { goToStep(d.step); showToast('Progress restored'); }
+  } catch(e){}
+}
+function clearSaved() { try { localStorage.removeItem('hcc_form'); } catch(e){} }
+function showToast(msg) { const t=$('#autosaveToast'); t.innerHTML=`<i class="fas fa-save"></i> ${msg}`; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
+let saveTimer; $$('input, textarea, select').forEach(el => { el.addEventListener('input', () => { clearTimeout(saveTimer); saveTimer=setTimeout(saveProgress,800); }); });
+
+// ========== SOCIAL PROOF ==========
+const proofs = [
+  {name:'Sarah M.',svc:'patio quote',time:'12 min ago'},
+  {name:'Mike R.',svc:'driveway estimate',time:'27 min ago'},
+  {name:'Jennifer L.',svc:'stamped concrete quote',time:'43 min ago'},
+  {name:'David K.',svc:'garage epoxy quote',time:'1 hour ago'},
+  {name:'Lisa T.',svc:'concrete repair estimate',time:'2 hours ago'},
+];
+let pi = 0;
+function showSP() {
+  const p = proofs[pi % proofs.length];
+  $('#spText').innerHTML = `<strong>${p.name}</strong> requested a ${p.svc}`;
+  $('#spTime').textContent = p.time;
+  $('#socialProof').classList.add('show');
+  setTimeout(() => $('#socialProof').classList.remove('show'), 5000);
+  pi++;
+}
+setTimeout(() => { showSP(); setInterval(showSP, 35000); }, 8000);
+
+// ========== EXIT INTENT ==========
+document.addEventListener('mouseout', e => {
+  if(exitShown || e.clientY >= 5 || $('#successScreen').classList.contains('active')) return;
+  $('#exitOverlay').classList.add('show'); exitShown = true;
+});
+
+// ========== URGENCY ==========
+$('#urgencyCount').textContent = Math.floor(Math.random()*5)+3;
+
+// ========== INIT ==========
+loadSaved();
+</script>
+</body>
+</html>
