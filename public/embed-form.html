@@ -271,14 +271,29 @@ body {
 
     <div class="form-body">
 
-      <!-- STEP 1 -->
+      <!-- STEP 1: SERVICE SELECTION -->
       <div class="form-step active" data-step="1">
-        <h2 class="step-title">Get Your Free Quote</h2>
-        <p class="step-subtitle">Takes 60 seconds — no obligation.</p>
+        <h2 class="step-title">What do you need?</h2>
+        <p class="step-subtitle">Select a service to get a tailored quote.</p>
         <div class="urgency-bar">
           <i class="fas fa-fire"></i>
           <span><strong id="urgencyCount">3</strong> people requested quotes in your area today</span>
         </div>
+        <div class="services-grid">
+          <div class="service-card" data-svc="Concrete Driveways"><div class="svc-icon"><i class="fas fa-road"></i></div><div class="svc-name">Driveways</div></div>
+          <div class="service-card" data-svc="Concrete Patios"><div class="svc-icon"><i class="fas fa-umbrella-beach"></i></div><div class="svc-name">Patios</div></div>
+          <div class="service-card" data-svc="Stamped Concrete"><div class="svc-icon"><i class="fas fa-palette"></i></div><div class="svc-name">Stamped Concrete</div></div>
+          <div class="service-card" data-svc="Concrete Repair"><div class="svc-icon"><i class="fas fa-wrench"></i></div><div class="svc-name">Repair &amp; Leveling</div></div>
+          <div class="service-card" data-svc="Concrete Resurfacing"><div class="svc-icon"><i class="fas fa-brush"></i></div><div class="svc-name">Resurfacing</div></div>
+          <div class="service-card" data-svc="Garage Epoxy Flooring"><div class="svc-icon"><i class="fas fa-warehouse"></i></div><div class="svc-name">Garage Epoxy</div></div>
+        </div>
+        <div class="field-error" id="fSvcErr" style="margin-top:8px">Please select a service</div>
+      </div>
+
+      <!-- STEP 2: CONTACT INFO -->
+      <div class="form-step" data-step="2">
+        <h2 class="step-title">Your Contact Info</h2>
+        <p class="step-subtitle">So we can send your free estimate.</p>
         <div class="field">
           <label>Full Name <span class="req">*</span></label>
           <div class="input-wrap"><i class="fas fa-user icon"></i><input type="text" id="fName" placeholder="John Anderson" autocomplete="name"></div>
@@ -294,21 +309,6 @@ body {
           <div class="input-wrap"><i class="fas fa-envelope icon"></i><input type="email" id="fEmail" placeholder="john@email.com" autocomplete="email"></div>
           <div class="field-error" id="fEmailErr">Enter a valid email address</div>
         </div>
-      </div>
-
-      <!-- STEP 2 -->
-      <div class="form-step" data-step="2">
-        <h2 class="step-title">What do you need?</h2>
-        <p class="step-subtitle">Select a service to get a tailored quote.</p>
-        <div class="services-grid">
-          <div class="service-card" data-svc="Concrete Driveways"><div class="svc-icon"><i class="fas fa-road"></i></div><div class="svc-name">Driveways</div></div>
-          <div class="service-card" data-svc="Concrete Patios"><div class="svc-icon"><i class="fas fa-umbrella-beach"></i></div><div class="svc-name">Patios</div></div>
-          <div class="service-card" data-svc="Stamped Concrete"><div class="svc-icon"><i class="fas fa-palette"></i></div><div class="svc-name">Stamped Concrete</div></div>
-          <div class="service-card" data-svc="Concrete Repair"><div class="svc-icon"><i class="fas fa-wrench"></i></div><div class="svc-name">Repair &amp; Leveling</div></div>
-          <div class="service-card" data-svc="Concrete Resurfacing"><div class="svc-icon"><i class="fas fa-brush"></i></div><div class="svc-name">Resurfacing</div></div>
-          <div class="service-card" data-svc="Garage Epoxy Flooring"><div class="svc-icon"><i class="fas fa-warehouse"></i></div><div class="svc-name">Garage Epoxy</div></div>
-        </div>
-        <div class="field-error" id="fSvcErr" style="margin-top:8px">Please select a service</div>
       </div>
 
       <!-- STEP 3 -->
@@ -422,11 +422,11 @@ function goToStep(n) {
 
   // Next button label per step
   if (n === 1) {
-    $('#btnNext').innerHTML = 'Continue <i class="fas fa-arrow-right"></i>';
-  } else if (n === 2) {
     $('#btnNext').innerHTML = selectedService
       ? 'Continue <i class="fas fa-arrow-right"></i>'
       : 'Select a Service Above <i class="fas fa-hand-pointer"></i>';
+  } else if (n === 2) {
+    $('#btnNext').innerHTML = 'Continue <i class="fas fa-arrow-right"></i>';
   } else if (n === totalSteps) {
     $('#btnNext').innerHTML = 'Submit Request <i class="fas fa-paper-plane"></i>';
   }
@@ -441,7 +441,7 @@ function goToStep(n) {
 
 function updateServiceTag() {
   const tag = $('#selectedSvcTag');
-  if (selectedService && step === 3) {
+  if (selectedService && step >= 2) {
     tag.innerHTML = `<span class="tag"><i class="fas fa-check-circle"></i> Service: ${selectedService}</span>`;
     tag.classList.add('show');
   } else {
@@ -473,8 +473,8 @@ function v3() {
 // ========== BUTTONS ==========
 $('#btnNext').addEventListener('click', () => {
   if (autoAdvanceTimer) clearTimeout(autoAdvanceTimer);
-  if(step===1 && v1()) goToStep(2);
-  else if(step===2 && v2()) goToStep(3);
+  if(step===1 && v2()) goToStep(2);
+  else if(step===2 && v1()) goToStep(3);
   else if(step===3 && v3()) submitForm();
 });
 $('#btnBack').addEventListener('click', () => {
@@ -496,7 +496,7 @@ $$('.service-card').forEach(c => {
     $('#btnNext').innerHTML = 'Continue <i class="fas fa-arrow-right"></i>';
 
     // Auto-advance after short delay
-    autoAdvanceTimer = setTimeout(() => goToStep(3), 800);
+    autoAdvanceTimer = setTimeout(() => goToStep(2), 800);
   });
 });
 
