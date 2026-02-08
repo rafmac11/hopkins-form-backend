@@ -17,6 +17,7 @@ const PORT = process.env.PORT || 3000;
 // RESEND_FROM_EMAIL     — verified sender, e.g. "Hopkins Concrete <noreply@webleadsnow.com>"
 // NOTIFICATION_EMAIL    — where quote requests are sent
 // CRM_WEBHOOK_URL       — your CRM inbound webhook endpoint
+// CRM_API_KEY           — your CRM API key (sent as X-API-Key header)
 // CRM_FORM_ID           — the form UUID your CRM expects
 // ---------------------------------------------------------------
 
@@ -160,7 +161,7 @@ async function sendConfirmationEmail({ name, email, service }) {
         <div style="padding: 24px;">
           <p>We received your request for <strong>${service}</strong> and our team will be in touch within 24 hours with a free estimate.</p>
           <p>If you need immediate help, call us at <a href="tel:6124733196" style="color: #03662b; font-weight: bold;">612-473-3196</a>.</p>
-          <p style="margin-top: 24px;">— The Legacy Concrete Team</p>
+          <p style="margin-top: 24px;">— The Hopkins Concrete Team</p>
         </div>
       </div>
     `;
@@ -181,7 +182,7 @@ async function sendConfirmationEmail({ name, email, service }) {
 }
 
 // ===============================================================
-// CRM — Push lead via webhook (matches your payload format)
+// CRM — Push lead via webhook (with X-API-Key auth)
 // ===============================================================
 async function pushToCRM(data) {
   const webhookUrl = process.env.CRM_WEBHOOK_URL;
@@ -200,7 +201,6 @@ async function pushToCRM(data) {
         phone: data.phone,
         zip_code: data.zipcode || "",
       },
-      // Extra fields outside the standard lead object
       meta: {
         service: data.service,
         address: data.address || "",
@@ -212,9 +212,18 @@ async function pushToCRM(data) {
       },
     };
 
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    // Add API key if set
+    if (process.env.CRM_API_KEY) {
+      headers["X-API-Key"] = process.env.CRM_API_KEY;
+    }
+
     const response = await fetch(webhookUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify(payload),
     });
 
@@ -233,5 +242,6 @@ app.listen(PORT, () => {
   console.log(`✅ Hopkins Concrete form backend running on port ${PORT}`);
   console.log(`   Resend API key: ${process.env.RESEND_API_KEY ? "✓ set" : "✗ MISSING"}`);
   console.log(`   CRM webhook:    ${process.env.CRM_WEBHOOK_URL ? "✓ set" : "✗ MISSING"}`);
+  console.log(`   CRM API key:    ${process.env.CRM_API_KEY ? "✓ set" : "✗ MISSING"}`);
   console.log(`   Notification:   ${process.env.NOTIFICATION_EMAIL || "(default)"}`);
 });
