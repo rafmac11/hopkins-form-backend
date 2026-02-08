@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -366,7 +367,7 @@ body {
         <div class="field">
           <label>Project Description <span class="req">*</span></label>
           <div class="input-wrap"><i class="fas fa-comment-dots icon" style="top:14px"></i><textarea id="fMessage" placeholder="Size, specific needs, questions…"></textarea></div>
-          <div class="field-error" id="fMsgErr">Describe your project briefly</div>
+          <div class="field-error" id="fMessageErr">Describe your project briefly</div>
         </div>
       </div>
 
@@ -498,7 +499,7 @@ function v3() {
   let ok = true;
   if($('#fAddress').value.trim().length<5){showErr('fAddress');ok=false}else clearErr('fAddress');
   if(!/^\d{5}$/.test($('#fZip').value.trim())){showErr('fZip');ok=false}else clearErr('fZip');
-  if($('#fMessage').value.trim().length<10){showErr('fMsg');ok=false}else clearErr('fMsg');
+  if($('#fMessage').value.trim().length<10){showErr('fMessage');ok=false}else clearErr('fMessage');
   return ok;
 }
 
