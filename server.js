@@ -182,7 +182,7 @@ async function sendConfirmationEmail({ name, email, service }) {
 }
 
 // ===============================================================
-// CRM — Push lead via webhook (with X-API-Key auth)
+// CRM — Push lead via webhook (flat payload + X-API-Key auth)
 // ===============================================================
 async function pushToCRM(data) {
   const webhookUrl = process.env.CRM_WEBHOOK_URL;
@@ -195,21 +195,17 @@ async function pushToCRM(data) {
     const payload = {
       form_id: process.env.CRM_FORM_ID || "hopkins-concrete-quote",
       source: "website",
-      lead: {
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        zip_code: data.zipcode || "",
-      },
-      meta: {
-        service: data.service,
-        address: data.address || "",
-        timeline: data.timeline || "",
-        budget: data.budget || "",
-        message: data.message || "",
-        submitted_at: data.timestamp,
-        source_url: "https://hopkinsconcretecontractors.com/contact-2/",
-      },
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      zip_code: data.zipcode || "",
+      service: data.service,
+      address: data.address || "",
+      timeline: data.timeline || "",
+      budget: data.budget || "",
+      message: data.message || "",
+      submitted_at: data.timestamp,
+      source_url: "https://hopkinsconcretecontractors.com/contact-2/",
     };
 
     const headers = {
